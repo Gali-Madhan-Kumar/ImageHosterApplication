@@ -15,28 +15,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //This controller method is called when the request pattern is of type 'users/registration'
     @RequestMapping("users/registration")
     public String registration(Model model) {
-        //Complete this method
-        //Observe User and UserProfile models implemented
-        //Declare an object of User class and UserProfile class
         User user = new User();
         UserProfile userProfile = new UserProfile();
-        //Set the profile of the user as UserProfile type object
         user.setProfile(userProfile);
         model.addAttribute("User", user);
-        //Add user in the model and return 'users/registration.html'
         return "users/registration";
     }
 
-    //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
+
     @RequestMapping(value = "users/registration", method = RequestMethod.POST)
     public String registerUser(User user) {
-        //Complete this method
-        //Call the business logic which currently does not store the details of the user in the database
         userService.registerUser(user);
-        //After registration, again redirect to the registration page
         return "redirect:/users/registration";
+    }
+
+    @RequestMapping("users/login")
+    public String login() {
+        return "users/login";
+    }
+
+    @RequestMapping(value = "users/login", method = RequestMethod.POST)
+    public String loginUser(User user) {
+        if (userService.login(user)) {
+            return "redirect:/images";
+        } else {
+            return "users/login";
+        }
     }
 }

@@ -12,36 +12,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  private UserService userService;
 
-    @RequestMapping("users/registration")
-    public String registration(Model model) {
-        User user = new User();
-        UserProfile userProfile = new UserProfile();
-        user.setProfile(userProfile);
-        model.addAttribute("User", user);
-        return "users/registration";
-    }
+  //This controller method is called when the request pattern is of type 'users/registration'
+  @RequestMapping("users/registration")
+  public String registration(Model model) {
+      User user = new User();
+      UserProfile profile = new UserProfile();
+      user.setProfile(profile);
+      model.addAttribute("User", user);
+      return "users/registration";
+  }
 
+  //This controller method is called when the request pattern is of type 'users/registration' and also the incoming request is of POST type
+  @RequestMapping(value = "users/registration", method = RequestMethod.POST)
+  public String registerUser(User user) {
+      userService.registerUser(user);
+      return "redirect:/users/login";
+  }
 
-    @RequestMapping(value = "users/registration", method = RequestMethod.POST)
-    public String registerUser(User user) {
-        userService.registerUser(user);
-        return "redirect:/users/registration";
-    }
+  //This controller method is called when the request pattern is of type 'users/login'
+  @RequestMapping("users/login")
+  public String login() {
+      return "users/login";
+  }
 
-    @RequestMapping("users/login")
-    public String login() {
-        return "users/login";
-    }
-
-    @RequestMapping(value = "users/login", method = RequestMethod.POST)
-    public String loginUser(User user) {
-        if (userService.login(user)) {
-            return "redirect:/images";
-        } else {
-            return "users/login";
-        }
-    }
+  //This controller method is called when the request pattern is of type 'users/login' and also the incoming request is of POST type
+  @RequestMapping(value = "users/login", method = RequestMethod.POST)
+  public String loginUser(User user) {
+      boolean userExists = userService.login(user);
+      if (userExists) {
+          return "redirect:/images";
+      } else {
+          return "users/login";
+      }
+  }
 }

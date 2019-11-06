@@ -22,4 +22,16 @@ public class UserRepository {
             transaction.rollback();
         }
     }
+
+    public User checkUser(String userName, String password) {
+        try {
+            EntityManager em = emf.createEntityManager();
+            TypedQuery<User> typedQuery = em.createQuery("SELECT u FROM User u WHERE u.username = :username AND  u.password = :password", User.class);
+            typedQuery.setParameter("username", userName);
+            typedQuery.setParameter("password", password);
+            return typedQuery.getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 }

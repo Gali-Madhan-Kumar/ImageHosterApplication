@@ -17,7 +17,7 @@ public class UserService {
         userRepository.registerUser(newUser);
     }
 
-    public boolean login(User user) {
-        return user.getUsername().equals("upgrad") && user.getPassword().equals("password");
+    public User login(User user) {
+        return userRepository.checkUser(user.getUsername(), user.getPassword());
     }
 }

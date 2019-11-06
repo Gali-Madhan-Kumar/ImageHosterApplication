@@ -1,13 +1,17 @@
 package ImageHoster.controller;
 
+import ImageHoster.model.Image;
 import ImageHoster.model.User;
 import ImageHoster.model.UserProfile;
+import ImageHoster.service.ImageService;
 import ImageHoster.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -40,9 +44,10 @@ public class UserController {
 
   //This controller method is called when the request pattern is of type 'users/login' and also the incoming request is of POST type
   @RequestMapping(value = "users/login", method = RequestMethod.POST)
-  public String loginUser(User user) {
-      boolean userExists = userService.login(user);
-      if (userExists) {
+  public String loginUser(User user, Model model) {
+      User existingUser = userService.login(user);
+      if (existingUser != null) {
+          model.addAttribute("User", user);
           return "redirect:/images";
       } else {
           return "users/login";
